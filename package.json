@@ -39,6 +39,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@floating-ui/dom": "^1.6.5"
+    "@floating-ui/dom": "^1.6.5",
+    "@sveltejs/adapter-static": "^3.0.1"
   }
 }
