@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" type="module">
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
@@ -16,13 +16,14 @@
 		if (!started) return;
 		nBombs = nPlayers - 1;
 		nDiscardedDiffuse = nPlayers < 4 ? 6 - nPlayers - 2 : 0;
-		nCards = 56 - nPlayers * 8 - (4 - nBombs) - nDiscardedDiffuse;
+		nCards = Math.max(56 - nPlayers * 8 - (4 - nBombs) - nDiscardedDiffuse, 0);
 	};
 
 	$: init(started);
 
+	$: nPlayers = Math.max(nPlayers, 0);
 	$: nBombs = nPlayers - 1;
-	$: chance = Math.min(nBombs / nCards, 1.0) * 100;
+	$: chance = Math.min(nBombs / nCards, 1.0) * 100 ;
 	$: threatLevel = chance < 50 ? 'success' : chance < 75 ? 'warning' : 'error';
 
 	const popupWhoops: PopupSettings = {
@@ -76,12 +77,12 @@
 				class="btn btn-xl bg-gradient-to-br variant-gradient-error-warning"
 				on:click={() => (nCards -= 1)}>Pick up a card</button
 			>
-			<p class="my-4 text-center">Cards left: {nCards}<br />Exploding kittens left: {nBombs}</p>
+			<p class="my-4 text-center text-sm text-neutral-300">Cards left: {nCards}<br />Exploding kittens left: {nBombs}</p>
+			<p class="mt-8 text-center">Random chance of picking up<br/>an exploding kitten...</p>
 			<ProgressRadial
 				class="my-8"
-				meter="stroke-{threatLevel}-500"
+				meter={`stroke-${threatLevel}-500`}
 				stroke={100}
-				lowChance
 				value={chance}>{chance.toFixed(2)}%</ProgressRadial
 			>
 			<button
