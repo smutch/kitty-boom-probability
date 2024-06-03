@@ -43,13 +43,22 @@
 			'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2VlMnNlYTN5cnFtM2M0YjBjNzV3emxqd3BhdWlpMTh5ZW9jenhqbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/E5jmd4OQ7PSo7JKlAR/giphy.gif',
 		buttonTextCancel: 'X'
 	};
+
+	const aboutModal: ModalSettings = {
+		type: 'alert',
+		title: 'About',
+		body: '<p>This is a simple utility to track the random probability of picking up an exploding kitten in the game <a href="https://www.explodingkittens.com/">Exploding Kittens</a>. It is not endorsed by, nor affiliated with, Exploding Kittens Inc.</p> <p class="mt-4">Created by <a href="https://github.com/smutch">@smutch</a> using <a href="https://kit.svelte.dev">SvelteKit</a> and <a href="https://www.skeleton.dev/">Skeleton</a>.<br/>Exploding kitten gif by <a href="https://giphy.com/gifs/yay-congratulations-yesss-E5jmd4OQ7PSo7JKlAR">@tutimon</a>.</p>',
+		buttonTextCancel: 'X',
+		modalClasses:
+			'bg-surface-100-800-token w-screen h-screen p-4 flex flex-col justify-center items-center'
+	};
 </script>
 
 <div
-	class="container h-full mx-auto flex flex-col justify-center items-center m-8 align-middle absolute x-50 y-50"
+	class="container h-full mx-auto flex flex-col justify-center items-center align-middle absolute"
 >
 	{#if !started}
-		<div class="w-modal-slim contents">
+		<div class="w-fit contents">
 			<label class="label">
 				<span>Players: {nPlayers}</span>
 				<input type="range" bind:value={nPlayers} min="2" max="5" />
@@ -102,3 +111,10 @@
 		</div>
 	{/if}
 </div>
+
+<footer class="fixed bottom-0 right-0 m-8">
+	<button
+		class="btn btn-sm variant-ringed-primary mt-8"
+		on:click={() => modalStore.trigger(aboutModal)}>About</button
+	>
+</footer>
