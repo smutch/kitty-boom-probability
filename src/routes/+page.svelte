@@ -3,12 +3,23 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings } from '@skeletonlabs/skeleton';
 
 	let started = false;
 	let nPlayers = 3;
-	let nBombs = nPlayers - 1;
-	let nDiscardedDiffuse = nPlayers < 4 ? 6 - nPlayers - 2 : 0;
-	let nCards = 56 - nPlayers * 8 - (4 - nBombs) - nDiscardedDiffuse;
+	let nBombs = 4;
+	let nDiscardedDiffuse = 0;
+	let nCards = 56;
+
+	const init = (started: boolean) => {
+		if (!started) return;
+		nBombs = nPlayers - 1;
+		nDiscardedDiffuse = nPlayers < 4 ? 6 - nPlayers - 2 : 0;
+		nCards = 56 - nPlayers * 8 - (4 - nBombs) - nDiscardedDiffuse;
+	};
+
+	$: init(started);
 
 	$: nBombs = nPlayers - 1;
 	$: chance = Math.min(nBombs / nCards, 1.0) * 100;
@@ -22,12 +33,22 @@
 		// Defines which side of your trigger the popup will appear
 		placement: 'top'
 	};
+
+	const modalStore = getModalStore();
+
+	const modal: ModalSettings = {
+		type: 'alert',
+		title: 'Boom!',
+		image:
+			'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2VlMnNlYTN5cnFtM2M0YjBjNzV3emxqd3BhdWlpMTh5ZW9jenhqbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/E5jmd4OQ7PSo7JKlAR/giphy.gif',
+		buttonTextCancel: 'X'
+	};
 </script>
 
 <div
 	class="container h-full mx-auto flex flex-col justify-center items-center m-8 align-middle absolute x-50 y-50"
 >
-	{#if started}
+	{#if !started}
 		<div class="w-modal-slim contents">
 			<label class="label">
 				<span>Players: {nPlayers}</span>
@@ -57,11 +78,11 @@
 			<button
 				type="button"
 				class="btn bg-gradient-to-br variant-filled-error dark:bg-error-600 mt-8"
-				on:click={() => (nPlayers -= 1)}>Player went BOOM!</button
+				on:click={() => {
+					nPlayers -= 1;
+					modalStore.trigger(modal);
+				}}>Player went BOOM!</button
 			>
-			<p>
-				<a href="https://giphy.com/gifs/yay-congratulations-yesss-E5jmd4OQ7PSo7JKlAR">via GIPHY</a>
-			</p>
 			<button class="btn btn-sm variant-ringed-warning mt-8" use:popup={popupWhoops}>Whoops!</button
 			>
 			<div class="card p-4 w-modal-slim" data-popup="popupWhoops">
